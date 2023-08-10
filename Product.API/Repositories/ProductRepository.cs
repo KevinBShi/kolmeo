@@ -53,5 +53,11 @@ namespace ProductAPI.Repositories
             _db.Remove(exists);
             await _db.SaveChangesAsync();
         }
+
+        public async Task<List<Product>> MostExpensiveProductsAsync(int limit = 5)
+        {
+            return await _db.Products.OrderByDescending(p => p.Price)
+                .Take(limit).ToListAsync();
+        }
     }
 }

@@ -21,8 +21,21 @@ namespace ProductAPI
             productApiGroup.MapPost("/", CreateProduct);
             productApiGroup.MapPut("/{id}", UpdateProduct);
             productApiGroup.MapDelete("/{id}", DeleteProduct);
+            productApiGroup.MapGet("/expensive/{limit}", GetMostExpensive);
 
             app.Run();
+        }
+
+        private static async Task<IResult> GetMostExpensive(int limit, IRepository<Product> repository)
+        {
+            var rst = await ((ProductRepository)repository).MostExpensiveProductsAsync(limit);
+
+            if (!rst.Any())
+            {
+                return TypedResults.NotFound();
+            }
+
+            return TypedResults.Ok(rst);
         }
 
         private static async Task<IResult> DeleteProduct(int id, IRepository<Product> repository)
